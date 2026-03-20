@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# Show Nexus Queueing Info
-# imports
 from samplebase import SampleBase
 from rgbmatrix import graphics
 import time
@@ -8,28 +6,23 @@ import requests
 import datetime
 import sys
 import threading
-# nexus variables
-event_key = "demo5314"
-api_key = "INSERT_API_KEY"
+# Nexus API Variables
+
+event_key = "YOUR_EVENT"
+api_key = "YOUR_API_KEY"
 url = "https://frc.nexus/api/v1/event/" + event_key
+session = requests.Session()
 headers = {"Nexus-Api-Key": api_key}
-response = requests.get(url, headers=headers) 
+
+response = session.get(url, headers=headers) 
 data = response.json()
 
-def get_app_updates():
-        response = requests.get(url, headers=headers) 
-        data = response.json()
-        time.sleep(30)
-
-update_thread = threading.Thread(target=get_app_updates,daemon=True)
-update_thread.start()
+if not response.ok:
+        error_message
 
 my_team_number = "2000"
 my_matches = filter(lambda m: my_team_number in m.get('redTeams', []) + m.get('blueTeams', []), data['matches'])
 my_next_match = next(filter(lambda m: not m['status'] == 'On field', my_matches), None)
-
-if not response.ok:
-    error_message
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
@@ -45,7 +38,7 @@ class RunText(SampleBase):
         red = graphics.Color(255,0,0)
         pos = 128
         my_text = self.args.text
-        while True:
+        while True:            
             line1 = graphics.DrawText(offscreen_canvas, font, pos, 7, textColor, "Next match")
             line2 = graphics.DrawText(offscreen_canvas, font, pos, 15, textColor, "Match")
             line3 = graphics.DrawText(offscreen_canvas, font, pos, 23, textColor, "Status")
