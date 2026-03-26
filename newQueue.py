@@ -6,12 +6,10 @@ import time
 import datetime
 import math
 from threading import Lock
-from flask import Flask, request # NEW: Required for Webhooks
+from flask import Flask, request
 
-# --- Configuration ---
 my_team_number = "6419"
 
-# --- Flask App Setup ---
 app = Flask(__name__)
 
 class MatchData:
