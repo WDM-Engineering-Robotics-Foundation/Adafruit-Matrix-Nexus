@@ -1,16 +1,19 @@
 #!/usr/bin/env python
+from enum import verify
+
 from samplebase import SampleBase
 from rgbmatrix import graphics
 import threading
 import time
 from threading import Lock
+import certifi
 
 import requests
 
 event_key = "YOUR_EVENT"
 api_key = "YOUR_API_KEY"
 url = "https://frc.nexus/api/v1/event/" + event_key
-session = requests.Session()
+# session = requests.Session()
 headers = {"Nexus-Api-Key": api_key}
 
 my_team_number = "2000"
@@ -68,6 +71,8 @@ class RunText(SampleBase):
         while True:
             # fetch next match data
             global current_data
+            if current_data is None:
+                continue
             my_next_match = current_data.next_match()
 
             line1 = graphics.DrawText(offscreen_canvas, font, pos, 7, textColor, "Next match")
@@ -104,7 +109,7 @@ class RunText(SampleBase):
 def update_loop():
     while True:
         global current_data
-        current_data = MatchData(requests.get(url, headers=headers).json())
+        current_data = MatchData(requests.get(url, headers=headers, verify=certifi.where()).json())
         time.sleep(30)
 
 
